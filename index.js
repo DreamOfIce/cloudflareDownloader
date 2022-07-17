@@ -1,10 +1,9 @@
 const express = require('express');
 const cloudflareScraper = require('cloudflare-scraper');
+const path = require('path');
 const app = express();
-
 app.get('/api/*', (req, res) => {
     const link = req.url.slice(5);
-    console.log(link);
     cloudflareScraper.get(link, { encoding: null }).then((body) => {
         res.status(200).send(body).end();
     }).catch((err) => {
