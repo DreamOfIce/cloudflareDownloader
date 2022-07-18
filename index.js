@@ -7,7 +7,7 @@ app.get('/api/*', (req, res) => {
     cloudflareScraper.get(link, { encoding: null }).then((body) => {
         res.status(200).send(body).end();
     }).catch((err) => {
-        res.status(500).json({ 'status': err, 'message': err });
+        res.status(500).json({ 'status': err, 'message': err.message });
     })
 })
 
