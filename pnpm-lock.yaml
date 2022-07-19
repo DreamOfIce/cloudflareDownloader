@@ -1,14 +1,30 @@
 lockfileVersion: 5.3
 
 specifiers:
-  cloudflare-scraper: ^1.0.8
+  axios: ^0.27.2
   express: ^4.18.1
+  hcaptcha-solver: ^1.0.1
+  node-axios-cookiejar: ^0.0.3
   puppeteer: ^15.4.0
+  puppeteer-extra: ^3.1.18
+  puppeteer-extra-plugin-stealth: ^2.7.8
+  request: ^2.88.2
+  request-promise-native: ^1.0.8
+  stormwall-bypass: ^1.0.1
+  tough-cookie: ^4.0.0
 
 dependencies:
-  cloudflare-scraper: 1.0.8_puppeteer@15.4.0
+  axios: 0.27.2
   express: 4.18.1
+  hcaptcha-solver: 1.0.2
+  node-axios-cookiejar: 0.0.3_axios@0.27.2
   puppeteer: 15.4.0
+  puppeteer-extra: 3.3.4_puppeteer@15.4.0
+  puppeteer-extra-plugin-stealth: 2.11.0_puppeteer-extra@3.3.4
+  request: 2.88.2
+  request-promise-native: 1.0.9_request@2.88.2
+  stormwall-bypass: 1.0.1
+  tough-cookie: 4.0.0
 
 packages:
 
@@ -22,8 +38,8 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: false
 
-  /@types/node/18.0.5:
-    resolution: {integrity: sha512-En7tneq+j0qAiVwysBD79y86MT3ModuoIJbe7JXp+sb5UAjInSShmK3nXXMioBzfF7rXC12hv12d4IyCVwN4dA==}
+  /@types/node/18.0.6:
+    resolution: {integrity: sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==}
     dev: false
     optional: true
 
@@ -31,7 +47,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 18.0.5
+      '@types/node': 18.0.6
     dev: false
     optional: true
 
@@ -91,6 +107,15 @@ packages:
 
   /aws4/1.11.0:
     resolution: {integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==}
+    dev: false
+
+  /axios/0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.15.1
+      form-data: 4.0.0
+    transitivePeerDependencies:
+      - debug
     dev: false
 
   /balanced-match/1.0.2:
@@ -180,23 +205,6 @@ packages:
       kind-of: 3.2.2
       lazy-cache: 1.0.4
       shallow-clone: 0.1.2
-    dev: false
-
-  /cloudflare-scraper/1.0.8_puppeteer@15.4.0:
-    resolution: {integrity: sha512-dP1iFYTmHa2n0A1JdtLMDHwBg0jy44NqlN1NEKDy0uz3sOY4lARoZGUwvJeRpTVU3h8ae2dxuW+N+xUC8OmEuQ==}
-    dependencies:
-      hcaptcha-solver: 1.0.2
-      puppeteer-extra: 3.3.4_puppeteer@15.4.0
-      puppeteer-extra-plugin-stealth: 2.11.0_puppeteer-extra@3.3.4
-      request: 2.88.2
-      request-promise-native: 1.0.9_request@2.88.2
-      stormwall-bypass: 1.0.1
-    transitivePeerDependencies:
-      - '@types/puppeteer'
-      - playwright-extra
-      - puppeteer
-      - puppeteer-core
-      - supports-color
     dev: false
 
   /combined-stream/1.0.8:
@@ -418,6 +426,16 @@ packages:
       path-exists: 4.0.0
     dev: false
 
+  /follow-redirects/1.15.1:
+    resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /for-in/0.1.8:
     resolution: {integrity: sha512-F0to7vbBSHP8E3l6dCjxNOLuSFAACIxFy3UehTUlG7svlXi37HHsDkyVcHo0Pq8QwrE+pXvWSVX3ZT1T9wAZ9g==}
     engines: {node: '>=0.10.0'}
@@ -442,6 +460,15 @@ packages:
   /form-data/2.3.3:
     resolution: {integrity: sha512-1lLKB2Mu3aGP1Q/2eCOx0fNbRMe7XdwktwOruhfqqd0rIJWwN4Dh+E3hrPSlDCXnSR7UtZ1N38rVXm+6+MEhJQ==}
     engines: {node: '>= 0.12'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: false
+
+  /form-data/4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -779,6 +806,15 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /node-axios-cookiejar/0.0.3_axios@0.27.2:
+    resolution: {integrity: sha512-bg/tEPfVQPRNWVyYIElPhImRiFqM8jsQ5JOTbo/0Z/CTG5/81PGW+IhoE6YV0Ob/of/Dc9Ey8t4aS1hAKskaAw==}
+    peerDependencies:
+      axios: ^0.15.2
+    dependencies:
+      axios: 0.27.2
+      tough-cookie: 2.3.2
+    dev: false
+
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -891,6 +927,10 @@ packages:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
+    dev: false
+
+  /punycode/1.4.1:
+    resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
     dev: false
 
   /punycode/2.1.1:
@@ -1244,12 +1284,28 @@ packages:
     engines: {node: '>=0.6'}
     dev: false
 
+  /tough-cookie/2.3.2:
+    resolution: {integrity: sha512-42UXjmzk88F7URyg9wDV/dlQ7hXtl/SDV6xIMVdDq82cnDGQDyg8mI8xGBPOwpEfbhvrja6cJ8H1wr0xxykBKA==}
+    engines: {node: '>=0.8'}
+    dependencies:
+      punycode: 1.4.1
+    dev: false
+
   /tough-cookie/2.5.0:
     resolution: {integrity: sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g==}
     engines: {node: '>=0.8'}
     dependencies:
       psl: 1.9.0
       punycode: 2.1.1
+    dev: false
+
+  /tough-cookie/4.0.0:
+    resolution: {integrity: sha512-tHdtEpQCMrc1YLrMaqXXcj6AxhYi/xgit6mZu1+EDWUn+qhUf8wMQoFIy9NXuq23zAwtcB0t/MjACGR18pcRbg==}
+    engines: {node: '>=6'}
+    dependencies:
+      psl: 1.9.0
+      punycode: 2.1.1
+      universalify: 0.1.2
     dev: false
 
   /tr46/0.0.3:
@@ -1279,6 +1335,11 @@ packages:
     dependencies:
       buffer: 5.7.1
       through: 2.3.8
+    dev: false
+
+  /universalify/0.1.2:
+    resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
+    engines: {node: '>= 4.0.0'}
     dev: false
 
   /universalify/2.0.0:

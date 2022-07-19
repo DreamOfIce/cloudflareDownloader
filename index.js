@@ -1,11 +1,17 @@
 const express = require('express');
-const cloudflareScraper = require('cloudflare-scraper');
+const axios = require('./scraper/index');
 const path = require('path');
 const app = express();
 app.get('/api/*', (req, res) => {
     const link = req.url.slice(5);
-    cloudflareScraper.get(link, { encoding: null }).then((body) => {
-        res.status(200).send(body).end();
+    axios.get(link, { responseType: 'stream' }).then((response) => {
+        const stream = response.data;
+        stream.on('data', (data) => {
+            res.write(data);
+        })
+        stream.on('end', () => {
+            res.status(response.status).end();
+        })
     }).catch((err) => {
         console.error(err.message);
         res.status(500).json({ 'code': 500, 'message': err.message });
