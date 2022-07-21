@@ -9,7 +9,7 @@ app.get('/api/*', (req, res) => {
     const link = req.url.slice(5);
     axios.get(link, {
         responseType: 'stream',
-        proxy: process.env.PROXY_HOST ? {
+        proxy: !!process.env.PROXY_HOST ? {
             protocol: 'http',
             host: process.env.PROXY_HOST,
             port: process.env.PROXY_PORT,

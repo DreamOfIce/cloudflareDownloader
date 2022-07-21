@@ -13,7 +13,7 @@ let chromium;
 let puppeteerCore;
 try {
   puppeteerCore = require('puppeteer');
-} catch (e) {}
+} catch (e) { }
 if (!puppeteerCore) {
   try {
     chromium = require('chrome-aws-lambda');
@@ -43,7 +43,7 @@ async function createBrowser(options) {
   }
 
   let args = ['--no-sandbox', '--disable-setuid-sandbox', '--user-agent=' + getUserAgent()];
-  if(userPuppeteerOptions.args) {
+  if (userPuppeteerOptions.args) {
     args = args.concat(userPuppeteerOptions.args)
   }
   if (proxy) {

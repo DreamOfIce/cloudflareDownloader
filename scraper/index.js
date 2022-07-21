@@ -6,30 +6,32 @@ const fillCookiesJar = require('./src/fillCookiesJar');
 const tough = require('tough-cookie');
 const { isCloudflareJSChallenge, isCloudflareCaptchaChallenge } = require('./src/utils');
 
-const isCloudflareIUAMError = (error) => {
-  if (error.response) {
-    const { data } = error.response;
+const isCloudflareIUAMError = (data) => {
+  console.log('IUAM Error')
+  if (!!data) {
     return isCloudflareJSChallenge(data) || isCloudflareCaptchaChallenge(data);
   }
   return false;
 }
 
-const handleError = async (error) => {
-  if (isCloudflareIUAMError(error)) {
-    const config = error.request;
+const handleError = async (response) => {
+  if (isCloudflareIUAMError(response.data)) {
+    const { config } = response;
     await fillCookiesJar(myAxios, config);
-    return await myAxios(options);
+    return await myAxios(config);
   }
-  throw error;
+  throw new Error('Origin esponse with status code 503');
 }
 
-const handleResponse = async (response, options) => {
-  const { url } = response;
+const handleResponse = async (response) => {
+  if (response.status === 503) return handleError(response);
+  const { url } = response.config;
   const body = response.data;
   if (isProtectedByStormwall(body)) {
+    console.log('Protected by stormwall')
     const cookie = getStormwallCookie(body);
     cookieJar.setCookie(cookie, url);
-    return await myAxios(options);
+    return await myAxios(response.config);
   }
   return response;
 }
@@ -38,9 +40,10 @@ const cookieJar = new tough.CookieJar()
 const defaultParams = {
   jar: cookieJar,
   headers: { 'User-Agent': getUserAgent() },
-  withCredentials: true
+  withCredentials: true,
+  validateStatus: code => code >= 200 && code < 300 || code === 503
 };
 
 const myAxios = axiosCookieJarSupport(axios.create(defaultParams))
-myAxios.interceptors.request.use(handleResponse, handleError)
+myAxios.interceptors.response.use(handleResponse)
 module.exports = myAxios;
