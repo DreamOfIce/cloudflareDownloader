@@ -15,12 +15,24 @@ const isCloudflareIUAMError = (data) => {
 }
 
 const handleError = async (response) => {
-  if (isCloudflareIUAMError(response.data)) {
-    const { config } = response;
-    await fillCookiesJar(myAxios, config);
-    return await myAxios(config);
+  if (response.config.responseType !== 'stream') {
+    if (isCloudflareIUAMError(response.data)) {
+      const { config } = response;
+      await fillCookiesJar(myAxios, config);
+      return await myAxios(config);
+    }
+  } else if (response.headers['server'] === 'cloudflare' &&
+    response.headers['content-type'] === 'text/html' &&
+    response.headers['content-length'] < 5120) {//为尽可能避免对流的阻塞,对流进行过滤
+    let receivePromise = new Promise((reslove, reject) => {
+      let resData;
+      response.data.on('data', (data) => resData += data)
+        .on('end', reslove(resData)).on('error', reject);
+    });
+    await receivePromise;
+  } else {
+    throw new Error('Origin responses with status code 503');
   }
-  throw new Error('Origin esponse with status code 503');
 }
 
 const handleResponse = async (response) => {
@@ -41,9 +53,9 @@ const defaultParams = {
   jar: cookieJar,
   headers: { 'User-Agent': getUserAgent() },
   withCredentials: true,
-  validateStatus: code => code >= 200 && code < 300 || code === 503
+  //validateStatus: code => code >= 200 && code < 300 || code === 503
 };
 
 const myAxios = axiosCookieJarSupport(axios.create(defaultParams))
-myAxios.interceptors.response.use(handleResponse)
+myAxios.interceptors.response.use(handleResponse, (err, response) => { console.log(err) })
 module.exports = myAxios;

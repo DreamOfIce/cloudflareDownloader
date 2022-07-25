@@ -8,17 +8,9 @@ require('dotenv').config()
 app.get('/api/*', (req, res) => {
     const link = req.url.slice(5);
     axios.get(link, {
-        responseType: 'stream',
-        proxy: !!process.env.PROXY_HOST ? {
-            protocol: 'http',
-            host: process.env.PROXY_HOST,
-            port: process.env.PROXY_PORT,
-            auth: {
-                username: process.env.PROXY_USER,
-                password: process.env.PROXY_PASS
-            }
-        } : null
+        //responseType: 'stream',
     }).then((response) => {
+        res.set('Content-Type', 'application/octet-stream').status(200).send(response.data); return;
         const stream = response.data;
         stream.on('data', (data) => {
             res.write(data);
