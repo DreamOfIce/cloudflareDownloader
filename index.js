@@ -8,9 +8,9 @@ require('dotenv').config()
 app.get('/api/*', (req, res) => {
     const link = req.url.slice(5);
     axios.get(link, {
-        //responseType: 'stream',
+        responseType: 'stream',
     }).then((response) => {
-        res.set('Content-Type', 'application/octet-stream').status(200).send(response.data); return;
+        //res.set('Content-Type', 'application/octet-stream').status(200).send(response.data); return;
         const stream = response.data;
         stream.on('data', (data) => {
             res.write(data);

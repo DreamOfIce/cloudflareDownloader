@@ -4,6 +4,7 @@ const { isProtectedByStormwall, getStormwallCookie } = require('stormwall-bypass
 const { getUserAgent } = require('./src/utils');
 const fillCookiesJar = require('./src/fillCookiesJar');
 const tough = require('tough-cookie');
+const stream = require('stream');
 const { isCloudflareJSChallenge, isCloudflareCaptchaChallenge } = require('./src/utils');
 
 const isCloudflareIUAMError = (data) => {
@@ -15,21 +16,30 @@ const isCloudflareIUAMError = (data) => {
 }
 
 const handleError = async (response) => {
+  console.log('Response with status 503,staring check!')
   if (response.config.responseType !== 'stream') {
     if (isCloudflareIUAMError(response.data)) {
       const { config } = response;
       await fillCookiesJar(myAxios, config);
       return await myAxios(config);
     }
-  } else if (response.headers['server'] === 'cloudflare' &&
+  } else if (response.headers['server'] === 'cloudflare' /*&&
     response.headers['content-type'] === 'text/html' &&
-    response.headers['content-length'] < 5120) {//为尽可能避免对流的阻塞,对流进行过滤
+    response.headers['content-length'] < 5120*/) {//为尽可能避免对流的阻塞,对流进行过滤
+    console.log('Stream request!');
     let receivePromise = new Promise((reslove, reject) => {
-      let resData;
-      response.data.on('data', (data) => resData += data)
+      let resData = Buffer.from();
+      response.data.on('data', (data) => resData = Buffer.concat([resData, data]))
         .on('end', reslove(resData)).on('error', reject);
     });
-    await receivePromise;
+    const resData = await receivePromise;
+    if (isCloudflareIUAMError(resData)) {
+
+    } else {
+      let resStream = new stream.PassThrough();
+      resStream.end(resData);
+      return resStream;
+    }
   } else {
     throw new Error('Origin responses with status code 503');
   }
@@ -57,5 +67,5 @@ const defaultParams = {
 };
 
 const myAxios = axiosCookieJarSupport(axios.create(defaultParams))
-myAxios.interceptors.response.use(handleResponse, (err, response) => { console.log(err) })
+myAxios.interceptors.response.use(handleResponse, (err, response) => { console.log(err, response) })
 module.exports = myAxios;
